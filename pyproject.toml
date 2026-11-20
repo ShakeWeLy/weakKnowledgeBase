@@ -1,0 +1,12 @@
+[project]
+name = "weakknowledgebase"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "weakagent",
+]
+
+[tool.uv.sources]
+weakagent = { path = "weakagent-0.3.2-py3-none-any.whl" }
