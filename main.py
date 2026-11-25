@@ -1,3 +1,6 @@
+import torch
+import weakagent
+
 def main():
     print("Hello from weakknowledgebase!")
 

@@ -8,3 +8,13 @@ wheels/
 
 # Virtual environments
 .venv
+.env
+./config.toml
+
+# Knowledge app (generated)
+backend/data/
+backend/.pytest_cache/
+rag/data/
+rag/volumes/
+frontend/node_modules/
+frontend/dist/

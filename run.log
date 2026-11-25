@@ -1,0 +1,508 @@
+[INFO][2026-11-20 21:54:41][base.py:548] - Executing step 1/4
+[ERROR][2026-11-20 21:54:42][llm.py:946] - OpenAI API error: Error code: 401 - Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error
+[ERROR][2026-11-20 21:54:42][llm.py:948] - Authentication failed. Check API key.
+[ERROR][2026-11-20 21:54:42][llm_errors.py:46] - LLM client error during think (HTTP 401): AuthenticationError: Error code: 401 - Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error
+[INFO][2026-11-20 21:54:42][short.py:225] - Short memory full snapshot saved run_id=1773cd05bed1 messages=2
+[INFO][2026-11-20 21:54:42][toolcall.py:389] - 🧹 Cleaning up resources for agent 'blog_rag'...
+[INFO][2026-11-20 21:54:42][toolcall.py:401] - ✨ Cleanup complete for agent 'blog_rag'.
+[INFO][2026-11-20 21:54:54][llm.py:257] - Token usage: Input=16, Completion=0, Cumulative Input=16, Cumulative Completion=0, Total=16, Cumulative Total=16
+[INFO][2026-11-20 21:54:55][llm.py:553] - [LLM] deepseek-v4-flash estimated completion tokens for streaming response: 2
+[INFO][2026-11-20 21:55:06][base.py:548] - Executing step 1/4
+[INFO][2026-11-20 21:55:07][llm.py:257] - Token usage: Input=505, Completion=125, Cumulative Input=505, Cumulative Completion=125, Total=630, Cumulative Total=630
+[INFO][2026-11-20 21:55:07][toolcall.py:101] - ✨ blog_rag's thoughts: 我会搜索关于 U-Net 的博客内容。
+[INFO][2026-11-20 21:55:07][toolcall.py:102] - 🛠️ blog_rag selected 2 tools to use
+[INFO][2026-11-20 21:55:07][toolcall.py:106] - 🧰 Tools being prepared: ['search_blogs', 'search_blogs']
+[INFO][2026-11-20 21:55:07][toolcall.py:109] - 🔧 Tool arguments: {"query": "Unet 介绍 网络结构", "top_k": 8}
+[INFO][2026-11-20 21:55:07][toolcall.py:236] - 🔧 Activating tool: 'search_blogs'...
+[INFO][2026-11-20 21:55:22][toolcall.py:206] - 🎯 Tool 'search_blogs' completed its mission! Result: Observed output of cmd `search_blogs` executed:
+[1] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 | 相关度: 0.901
+整个像一个英文字母“U”。**左侧的编码器（收缩路径）** 和 **右侧的解码器（扩张路径）**。
+
+三大核心组件:
+
+1. 左侧的encoder: 负责特征提取
+2. 右侧的decoder:  利用特征
+3. 中间的跳跃连接:
+
+[2] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.887
+print("shape of x: ", x.shape)
+        print("shape of encoderOutput4: ", encoderOutput4.shape)
+        x = self.decoder1(x, encoderOutput4)
+        print("shape of x: ", x.shape)
+        print("shape of encoderOutput3: ", encoderOutput3.shape)
+        x = self.decoder2(x, encoderOutput3)
+        print("shape of x: ", x.shape)
+        print("shape of encoderOutput2: ", encoderOutput2.shape)
+        x = self.decoder3(x, encoderOutput2)
+        print("shape of x: ", x.shape)
+        print("shape of encoderOutput1: ", encoderOutput1.shape)
+        x = self.decoder4(x, encoderOutput1)
+
+x = self.outputConv(x)
+        return x
+
+[3] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.886
+```python
+import torch
+
+from torch import nn
+
+class Conv(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size, padding):
+        super(Conv, self).__init__()
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=kernel_size, padding=padding)
+        self.relu = nn.ReLU()
+
+def forward(self, x):
+        x = self.relu(self.conv(x))
+        return x
+
+class concatNet(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(concatNet, self).__init__()
+        self.linear = nn.Linear(in_channels, out_channels)
+        self.relu = nn.ReLU()
+
+def forward(self, x):
+        x = self.relu(self.linear(x))
+        return x
+
+[4] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.883
+class Encoder(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(Encoder, self).__init__()
+        self.doownConv1 = Conv(in_channels, out_channels, kernel_size=3, padding=1)
+        self.doownConv2 = Conv(out_channels, out_channels, kernel_size=3, padding=1)
+        self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
+
+def forward(self, x):
+        convOuput = self.doownConv2((self.doownConv1(x)))
+        # print(convOuput.shape)
+        x = self.maxpool(convOuput)
+        # print(x.shape)
+        return x, convOuput
+
+[5] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.878
+class Decoder(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(Decoder, self).__init__()
+        self.upTranConv = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2, padding=0)
+        self.upConv1 = Conv(out_channels*2, out_channels, kernel_size=3, padding=1)
+        self.upConv2 = Conv(out_channels, out_channels, kernel_size=3, padding=1)
+
+def forward(self, x, encoderOutput):
+        x = self.upTranConv(x)
+        x = torch.cat((x, encoderOutput), dim=1)
+        x = self.upConv2(self.upConv1(x))
+        return x
+
+[6] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.877
+class Unet(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(Unet, self).__init__()
+        self.encoder1 = Encoder(in_channels, 64)
+        self.encoder2 = Encoder(64, 128)
+        self.encoder3 = Encoder(128, 256)
+        self.encoder4 = Encoder(256, 512)
+
+self.bottleConv1 = Conv(512, 1024, kernel_size=3, padding=1)
+        self.bottleConv2 = Conv(1024, 1024, kernel_size=3, padding=1)
+
+self.decoder1 = Decoder(1024, 512)
+        self.decoder2 = Decoder(512, 256)
+        self.decoder3 = Decoder(256, 128)
+        self.decoder4 = Decoder(128, 64)
+
+self.outputConv = Conv(64, out_channels, kernel_size=1, padding=0)
+
+[7] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.3 跳跃连接 (Skip Connections) - U-Net 的精髓 | 相关度: 0.877
+**Encoder中、下采样之前的特征图**，直接“跳跃”到Decoder中，与**对应层级上采样之后的特征图进行拼接**。
+
+**为什么:**
+
+1. 获取来自**高分辨率**的encoder的特征和局部细节
+2. 获取来自decoder的**高纬度特征**和全局细节
+
+[8] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.874
+if __name__ == "__main__":
+    model = Unet(in_channels=3, out_channels=2)
+    dummy_input = torch.randn(1, 3, 256, 256)
+    output = model(dummy_input)
+    print(output.shape)
+```
+[INFO][2026-11-20 21:55:22][toolcall.py:236] - 🔧 Activating tool: 'search_blogs'...
+[INFO][2026-11-20 21:55:22][toolcall.py:206] - 🎯 Tool 'search_blogs' completed its mission! Result: Observed output of cmd `search_blogs` executed:
+[1] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.3 跳跃连接 (Skip Connections) - U-Net 的精髓 | 相关度: 0.859
+**Encoder中、下采样之前的特征图**，直接“跳跃”到Decoder中，与**对应层级上采样之后的特征图进行拼接**。
+
+**为什么:**
+
+1. 获取来自**高分辨率**的encoder的特征和局部细节
+2. 获取来自decoder的**高纬度特征**和全局细节
+
+[2] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.835
+class Encoder(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(Encoder, self).__init__()
+        self.doownConv1 = Conv(in_channels, out_channels, kernel_size=3, padding=1)
+        self.doownConv2 = Conv(out_channels, out_channels, kernel_size=3, padding=1)
+        self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
+
+def forward(self, x):
+        convOuput = self.doownConv2((self.doownConv1(x)))
+        # print(convOuput.shape)
+        x = self.maxpool(convOuput)
+        # print(x.shape)
+        return x, convOuput
+
+[3] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.2 decoder | 相关度: 0.834
+将编码器提取的高级但粗糙的特征图**恢复到原始图像的尺寸**，并在此过程中实现像素级的精确定位。
+
+主要由:
+
+1. 2x2的上采样, 转置卷积
+2. 3x3的卷积层+激活函数
+3. 跳跃连接进行concat
+
+**目的**
+
+1. 恢复分辨率
+2. 类似任务头
+
+**实现**
+
+```python
+class Decoder(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(Decoder, self).__init__()
+        self.upTranConv = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2, padding=0)
+        self.upConv1 = Conv(out_channels*2, out_channels, kernel_size=3, padding=1)
+        self.upConv2 = Conv(out_channels, out_channels, kernel_size=3, padding=1)
+
+def forward(self, x, encoderOutput):
+        x = self.upTranConv(x)
+        x = torch.cat((x, encoderOutput), dim=1)
+        x = self.upConv2(self.upConv1(x))
+        return x
+```
+
+[4] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.832
+print("shape of x: ", x.shape)
+        print("shape of encoderOutput4: ", encoderOutput4.shape)
+        x = self.decoder1(x, encoderOutput4)
+        print("shape of x: ", x.shape)
+        print("shape of encoderOutput3: ", encoderOutput3.shape)
+        x = self.decoder2(x, encoderOutput3)
+        print("shape of x: ", x.shape)
+        print("shape of encoderOutput2: ", encoderOutput2.shape)
+        x = self.decoder3(x, encoderOutput2)
+        print("shape of x: ", x.shape)
+        print("shape of encoderOutput1: ", encoderOutput1.shape)
+        x = self.decoder4(x, encoderOutput1)
+
+x = self.outputConv(x)
+        return x
+
+[5] 来源: 2025年5月4日-yolo汇总.md | 分类: AI & ML / CV | 标题: Ultralytics 库 > YOLO.predict() > 1 用法/参数说明 | 相关度: 0.832
+uts. **Allows skipping frames in videos** to speed up processing at the cost of temporal resolution. A value of 1 processes every frame, higher values skip frames. |
+| `stream_buffer` | `bool`           | `False`                | Determines whether to queue incoming frames for video streams. If `False`, old frames get dropped to accommodate new frames (optimized for real-time applications). If `True`, queues new frames in a buffer, ensuring no frames get skipped, but will cause latency if inference FPS is lower than stream FPS. |
+| `visualize`     | `bool`           | `False`                | Activates visualization of model features during inference, providing insights into **what the model is "seeing".** Useful for debugging and model interpretation. |
+| `augment`       | `bool`         
+
+[6] 来源: 2026年8月15日-model_详解02-FCN.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 skip layer | 相关度: 0.832
+限于精度问题不能够很好地还原图像当中的特征，因此在这里向前迭代。把conv中的卷积核对上一次upsampling之后的图进行反卷积补充细节（相当于一个差值过程）
+
+[7] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.4 完整代码 | 相关度: 0.830
+class Decoder(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(Decoder, self).__init__()
+        self.upTranConv = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2, padding=0)
+        self.upConv1 = Conv(out_channels*2, out_channels, kernel_size=3, padding=1)
+        self.upConv2 = Conv(out_channels, out_channels, kernel_size=3, padding=1)
+
+def forward(self, x, encoderOutput):
+        x = self.upTranConv(x)
+        x = torch.cat((x, encoderOutput), dim=1)
+        x = self.upConv2(self.upConv1(x))
+        return x
+
+[8] 来源: 2026年8月15日-model_详解01-Unet.md | 分类: AI & ML / CV | 标题: 1 网络结构 > 1.1 encoder | 相关度: 0.830
+负责特征提取:
+
+主要是由:
+
+1. 两个3X3的卷积层和激活函数组成
+2. 一个2X2的最大池化层, stride=2, size减半
+
+**目的:**
+
+1. 提取特征,
+2. 高级语义信息
+
+**实现:**
+
+```python
+class Encoder(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(Encoder, self).__init__()
+        self.doownConv1 = Conv(in_channels, out_channels, kernel_size=3, padding=1)
+        self.doownConv2 = Conv(out_channels, out_channels, kernel_size=3, padding=1)
+        self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
+
+def forward(self, x):
+        convOuput = self.doownConv2((self.doownConv1(x)))
+        print(convOuput.shape)
+        x = self.maxpool(convOuput)
+        print(x.shape)
+        return x, convOuput
+```
+[INFO][2026-11-20 21:55:22][base.py:548] - Executing step 2/4
+[INFO][2026-11-20 21:55:27][llm.py:257] - Token usage: Input=3898, Completion=715, Cumulative Input=4403, Cumulative Completion=840, Total=4613, Cumulative Total=5243
+[INFO][2026-11-20 21:55:27][toolcall.py:101] - ✨ blog_rag's thoughts: ## 博客中对 U-Net 的介绍（简要概括）
+
+博客把 U-Net 放在 CV 分类下的「model_详解」系列中，按**网络结构**逐层拆解，整体形状像英文字母“U”：
+
+**三大核心组件**
+1. **Encoder（左侧收缩路径）**：负责特征提取。每层由「两个 3×3 卷积 + 激活函数」加「2×2、stride=2 最大池化」组成，尺寸减半；目的是提取特征与高级语义信息。
+2. **Decoder（右侧扩张路径）**：把编码器提取的高级但粗糙的特征图恢复到原图尺寸，并实现像素级精确定位。主要由 2×2 上采样（转置卷积）、3×3 卷积 + 激活、以及对跳跃连接进行 concat 组成，作用类似任务头。
+3. **跳跃连接（Skip Connections）——U-Net 的精髓**：把 Encoder 中**下采样之前**的特征图直接“跳”到 Decoder，与对应层级**上采样之后**的特征图进行拼接。原因是同时获得 encoder 的高分辨率特征/局部细节，以及 decoder 的高维特征/全局信息。
+
+**代码实现要点**
+- `Conv` 类：Conv2d + ReLU；`Encoder` 前向返回两个值 `(池化后特征, 池化前特征)`，后者供跳跃连接使用。
+- `Decoder`：先 `ConvTranspose2d(2×2, stride=2)` 上采样，再 `torch.cat((x, encoderOutput), dim=1)` 拼接，接两层 3×3 卷积。
+- `Unet` 主干通道数：encoder 为 64→128→256→512，中间瓶颈层两个 1024 通道卷积，decoder 为 1024→512→256→128→64，最后 1×1 卷积输出 `out_channels`。
+- 示例用法：`Unet(in_channels=3, out_channels=2)` 输入 `torch.randn(1, 3, 256, 256)` 打印输出 shape。
+
+**来源文件名**
+- `2026年8月15日-model_详解01-Unet.md`（1.1 encoder、1.2 decoder、1.3 跳跃连接、1.4 完整代码）
+
+（另外，同系列的 `2026年8月15日-model_详解02-FCN.md` 在 1.4 skip layer 中也提到相似的反卷积补细节思路，可作为对照参考。）
+[INFO][2026-11-20 21:55:27][toolcall.py:102] - 🛠️ blog_rag selected 0 tools to use
+[INFO][2026-11-20 21:55:27][toolcall.py:187] - 🏁 Agent completed the task (no tool calls, final response in content).
+[INFO][2026-11-20 21:55:27][short.py:225] - Short memory full snapshot saved run_id=e7304d54a1d9 messages=6
+[INFO][2026-11-20 21:55:27][toolcall.py:389] - 🧹 Cleaning up resources for agent 'blog_rag'...
+[INFO][2026-11-20 21:55:27][toolcall.py:401] - ✨ Cleanup complete for agent 'blog_rag'.
+[INFO][2026-11-20 22:11:19][base.py:548] - Executing step 1/4
+[INFO][2026-11-20 22:11:21][llm.py:257] - Token usage: Input=488, Completion=244, Cumulative Input=488, Cumulative Completion=244, Total=732, Cumulative Total=732
+[INFO][2026-11-20 22:11:21][toolcall.py:101] - ✨ blog_rag's thoughts: 
+[INFO][2026-11-20 22:11:21][toolcall.py:102] - 🛠️ blog_rag selected 2 tools to use
+[INFO][2026-11-20 22:11:21][toolcall.py:106] - 🧰 Tools being prepared: ['search_blogs', 'search_blogs']
+[INFO][2026-11-20 22:11:21][toolcall.py:109] - 🔧 Tool arguments: {"query": "关于我 博客介绍 作者", "top_k": 5}
+[INFO][2026-11-20 22:11:21][toolcall.py:236] - 🔧 Activating tool: 'search_blogs'...
+[INFO][2026-11-20 22:11:41][toolcall.py:206] - 🎯 Tool 'search_blogs' completed its mission! Result: Observed output of cmd `search_blogs` executed:
+[1] 来源: 2026年8月1日-第一份工作总结.md | 分类: Personal / Career | 标题: 利事丰公司 > 6. 对自己的评价 | 相关度: 0.845
+回头看这一年，这是我第一次真正意义上的工作，也是我成长最快的一年。
+
+最大的变化，其实不是学会了多少技术，而是心态上的转变。
+
+刚进入公司的时候，我更像一个学生。我希望做自己擅长、喜欢的事情，一旦遇到和自己方向不相关、不会做或者觉得没有意义的工作，就会下意识地抗拒，觉得"为什么又是我""这和算法有什么关系"。
+
+后来慢慢发现，真正的工作并不会按照你的兴趣安排任务。一个项目从需求到落地，算法只是其中的一环。后端、前端、数据库、部署、网络、硬件、现场调试，很多事情都需要有人去完成。如果每一件不会的事情都选择逃避，那永远只能停留在舒适区。
+
+于是，我开始不再抱怨，而是主动去查资料、阅读文档、请教别人、不断实验和验证。虽然很多工作依旧不是我最喜欢的内容，但至少我不会再因为"不会"而拒绝去做，而是想着"怎么才能把它做好"。
+
+这一年里，我接触了模型训练、后端开发、简单的前端页面、工业相机部署、WebRTC、硬件调试、服务器环境等许多以前从未接触过的内容。现在回头看，它们未必都会成为我未来的主方向，却让我拥有了更完整的工程视角。
+
+除了技术之外，我觉得自己还有一个需要反思的地方。
+
+公司的管理相对宽松，我也曾利用这种宽松，做过一些投机取巧的事情，例如利用考勤规则"摸鱼加班"、偶尔提前离开公司等。虽然没有影响工作的完成，但现在回头看，这更多反映的是当时自己的职业意识还不够成熟。
+
+后来我越来越意识到，职业素养并不仅仅体现在技术能力上，也体现在是否能够对自己的时间、工作和行为负责。制度可以宽松，但不能因此降低对自己的要求。这也是这一年里，我觉得自己仍然需要继续改进的地方。
+
+------
+
+[2] 来源: 2026年3月1日-工程设计.md | 分类: Engineering / Backend | 标题: 开发杂谈 > 计划. 杂谈 2026年3月12日 | 相关度: 0.841
+1 写代码的步骤
+
+> 写那么久代码了. 虽然一开始就是ai帮忙写的, 所以跳过了很多coding的坑
+>
+> 最近开始自己+tab补全进行手写, 只有重复工作的时候交给agent
+> 写了只有发现有时候会出很多问题. 就比如:
+>
+> 1. 经常写着写着就举步维艰了, 不知道如何写下去, 因为按照自己一开始的想法写, 发现效果不是很好. 然后就乱改了, 改到后面手忙脚乱了...
+>
+> > 我想的解决办法就是: 1. 其实这是正常的, 需要改进的地方就是一开始的plan需要推敲, 不要有小想法,模糊想法就开始coding. 2. 先参考其他人的, 然后分析和改进(但是这样好想就不需要自己写了, 需求明确, 好像完全可以给ai完成, 比如:PlanAgent)
+>
+> 2. 经常写了之后又有新的想法, 然后重构重构再重构, 比如: ReacRuleAgent
+> 3. 很多地方还是很纠结的, 比如Finish位置
+>
+> > 所以我进行了调研, 虽然正常是在action里, 但是在thought会少一步 LLM
+>
+> 4. 其次就是经常写着写着就逃避了, 搞chore去了, 写无关紧要的东西
+> 5. 另外就是不同模型搞得+对输出message不熟悉. 虽然这是必踩的坑
+
+[3] 来源: 2026年3月16日-rag_2工程实践.md | 分类: AI & ML / Agent | 标题: 2026年4月14日 > query1:   \# 1. Theme/Plot category (testing semantic understanding) > 5. rewrite分数偏差大 | 相关度: 0.839
+s who are admitted to our hospital…
+genre: ["高畫質", "DMM獨家", "中出", "口交", "护士", "打手槍", "女醫生"]
+serial: だれとでも定額挿れ放題！
+rewrite: Hospital staff unlimited sex, patients can have vaginal ejaculation and oral sex with any nurse or doctor for a fixed monthly fee.
+plot: We are offering a "pay-per-use" service for patients admitted to our hospital's internal medicine ward. This service allows patients to have unlimited sexual ac ...
+------------------------------------------------------------
+ident: SDDE-299, similarity=0.5644, cosine_distance=0.4356
+title: (Behind the scenes) Hand-cooch clinic - Complete Edition - Sex clinic fan appreciation festival 2012 - Ultra luxurious! Special edition for the end of the year
+genre: ["高畫質", "护士", "企畫", "打手槍"]
+serial: （裏）手コキクリニック
+rewrite: Nurse and patient engage i
+
+[4] 来源: 2026年8月1日-第一份工作总结.md | 分类: Personal / Career | 标题: 利事丰公司 > 3. 我真正学到的东西（成长） | 相关度: 0.839
+> 真的要感谢AI, 感谢cursor, 如果没有AI辅助编程和学习, 感觉我真的很难会干这么久, 至少不会干满一年, 大概会提前离职结束了, 太多太多没接触过甚至是不感兴趣不相关不想干的东西了
+
+首先是git 现在还能回想起当初刚刚入职时对git操作一窍不通, 只能马不停蹄的学习了解命令和操作, 但是现在使用也是轻车熟路了, 虽然日常只会add commit和push
+
+其次完整的后端开发, 虽然到现在还没写test, 或者说没用test, 甚至我都不知道ai视觉应该pytest什么? 不可能是输入图片或者视频给出预料中的detection result? 那我不如直接跑test数据完整后端流程. 至于数据库什么的? 似乎之后写入保存而已
+
+再者就是接触了AI agent, 写了完整的dashboard管理平台, 也让我从LLM到agent进行了学习, 看了open_manus等等的开源仓库, 真正意义上的动手尝试了agent loop的设计并进行了改进, 最后开发出了属于自己的 `weakagent`!
+
+还有就是工程思维, 以前：能跑就行。后来：会考虑接口设计。会考虑：可维护性,可扩展性,日志,配置,异常处理,部署. 甚至开始写：Agent框架, Task Processor等等
+
+[5] 来源: 2026年8月1日-第一份工作总结.md | 分类: Personal / Career | 标题: 利事丰公司 > 2. 工作内容（我到底做了什么） | 相关度: 0.839
+> 完成的项目:
+>
+> 901D包装缺漏件检测 -->   haoyi NG产品数量检测  --> AI adboard 前后端  -->  WebRTC 部署bug  -->   Pose员工行为分析  -->  OCR按键检测 -->  AI基础设施相关的训练标注+数据回传+模型回测+模型迭代系统 -->  adboard后端agent更新 -->  双皮奶项目+煮饺子项目+便利店项目(本质都只是简单的area区域目标识别+出餐口空位为模版匹配)  --> 相机标定  -->  水果项目的深度相机的小孔成像定位  -->  水果项目的手眼标定定位  -->  打螺丝的螺丝孔九点标定精定位  --> 打螺丝的平面标定产品螺丝孔初定位
+
+从一开始入职我还以为自己会只是训练模型, 修改模型架构, (因为这是我在学校所能接触到的, 就像新来的两个应届生一样. ) 但是公司没有自己的服务器, 没有标注人员, 小公司, 一切都得自己来完成AI的所有pipeline.
+
+后来才发现, 真正的AI落地其实是比较困难的, 即便是很成熟的工业AI视觉. 模型只是其中的一小部分, 更多还是要做兼容性处理, 就比如in_area, require_frame, conf等等, 更多的是要满足生产环境, 满足甲方的要求
+
+在这里，我接触到了从算法到部署的一整套流程。除了视觉算法之外，还需要处理前端 Dashboard、FastAPI 服务、WebRTC 视频流、一体机部署、Modbus 通讯、数据库设计、Linux 环境、Docker、现场调试等等。
+
+很多时候，一个问题可能不是算法，而是环境、网络、驱动、相机或者 PLC。真正花时间的往往不是写模型，而是把整个系统跑起来。
+[INFO][2026-11-20 22:11:41][toolcall.py:236] - 🔧 Activating tool: 'search_blogs'...
+[INFO][2026-11-20 22:11:42][toolcall.py:206] - 🎯 Tool 'search_blogs' completed its mission! Result: Observed output of cmd `search_blogs` executed:
+[1] 来源: 2025年6月2日-rag_1框架.md | 分类: AI & ML / Agent | 标题: 三 READER > 2 Reader_use | 相关度: 0.853
+er** (ravi03071991): 加载 Twitter/X 推文及元数据。
+>    - **SlackReader** (jerryjliu, Verified): 从 Slack 频道提取消息和文件。
+>    - **YoutubeTranscriptReader** (ravi03071991): 提取 YouTube 视频字幕或转录内容。
+>    - **GmailReader** (llama-index): 加载 Gmail 邮件内容及附件。
+> 4. 数据库加载器
+>    - **SimpleMongoReader** (jerryjliu, Verified): 从 MongoDB 数据库加载数据。
+>    - **QdrantReader** (kacperlukawski): 从 Qdrant 向量数据库加载向量数据。
+>    - **DatabaseReader** (kevinqz): 通用 SQL 数据库加载器。
+> 5. 学术与研究加载器
+>    - **WikipediaReader** (jerryjliu, Verified): 从维基百科加载文章内容。
+>    - **ArxivReader** (thejessezhang, Verified): 从 arXiv 加载学术论文。
+>    - **SemanticScholarReader** (shauryr): 从 Semantic Scholar 提取研究数据。
+> 6. 云服务与生产力工具加载器
+>    - **NotionPageReader** (jerryjliu, Verified): 从 Notion 页面和数据库加载内容。
+>    - **GoogleDocsReader** (jerryjliu, Verified): 加载 Google 
+
+[2] 来源: 2026年2月3日-rag_0初步认识.md | 分类: AI & ML / Agent | 标题: 二 数据 > 2 文本分块 > 2.2 嵌入过程中的信息损失 | 相关度: 0.844
+大多数嵌入模型都基于 Transformer 编码器。其工作流程大致如下：
+
+- **分词 (Tokenization)**: 将输入的文本块分解成一个个 token。
+- **向量化 (Vectorization)**: Transformer 为**每个 token** 生成一个高维向量表示。
+- **池化 (Pooling)**: 通过某种方法（如取 `[CLS]` 位的向量、对所有token向量求平均 `mean pooling` 等），将所有 token 的向量**压缩**成一个**单一的向量**，这个向量代表了整个文本块的语义。
+
+> `[CLS]` 是BERT等Transformer模型在输入文本开头添加的特殊标记，它通过自注意力机制动态聚合整个序列的上下文信息，其最终向量被训练用作代表全局语义的嵌入。
+
+在这个`压缩`过程中，信息损失是不可避免的。一个768维的向量需要概括整个文本块的所有信息。**文本块越长，包含的语义点越多，这个单一向量所承载的信息就越稀释**，**导致其表示变得笼统，关键细节被模糊化，从而降低了检索的精度。**
+
+> 假设有一个关于《王者荣耀》英雄鲁班七号的攻略文档。
+>
+> - **糟糕的分块策略**：将“技能介绍”、“推荐出装”和“背景故事”这三个完全不同主题的内容，全部放在一个巨大的文本块里。
+>   - 当玩家查询“鲁班七号怎么出装？”时，这个大块虽然包含了出装信息，但由于被技能说明和英雄故事等无关主题严重稀释，其整体的检索相关性得分可能会很低，导致无法被召回。
+> - **优秀的分块策略**：将“技能”、“出装”和“故事”分别切分为三个独立的、主题聚焦的块。
+>   - 当玩家再次查询时，“推荐出装”这个块会因为与查询高度相关而获得极高的分数，从而被精准地检索出来。
+
+[3] 来源: 2026年2月3日-rag_0初步认识.md | 分类: AI & ML / Agent | 标题: 四 索引优化 > 1 混合索引 > 1.1 **稀疏向量 和 **密集向量 | 相关度: 0.843
+> **OOV（Out-of-Vocabulary）未登录词**：指在模型训练时没有出现在词汇表中，但在实际使用时遇到的新词汇。例如，如果模型训练时词汇表中没有"ChatGPT"这个词，那么在实际应用中遇到它时就是OOV。传统的稀疏向量方法（如BM25）对OOV词汇会完全忽略，而现代的密集向量方法通过子词分割（如BPE、WordPiece）可以更好地处理OOV问题。
+    >
+    > 以下是我处理 “不认识” 的词的具体机制：
+    >
+    > ### 1. 核心原理：基于 “子词” 而非 “整词”
+    >
+    > 我和 GPT、BERT 等现代 Transformer 模型一样，使用 **Byte-level BPE（字节级别的子词分词）** 作为底层编码方式。
+    >
+    > - **传统模型**：词汇表是固定的几万到几十万个 “整词”。遇到新词（如 “栓 Q”、“绝绝子”），直接标记为 `<UNK>`（未知），信息丢失。
+    > - 我（及同类大模型）：词汇表包含常见的词、词根、词缀，甚至单个字符 / 字节。
+    >   - 遇到新词时，我会把它**拆分成已知的子词或字符**。
+    >   - 例如：遇到一个生僻的名字 “𰻞𰻞面”，或者一个新造词 “AI 爆改”，我不会把它当成一个整体扔掉，而是拆分成模型认识的基础单元，然后通过上下文去理解它的语义。
+    >
+    > **结论**：我**不会**把新词变成 `<UNK>`，而是通过拆解，保留了绝大部分语义信息。
+    >
+    > ### 2. 如何理解 “新词” 和 “专有名词”？
+    >
+    > 虽然我能编码新词，但 “能不能理解” 取决于**上下文学习能力**和**训练数据**：
+    >
+    > 1. **新词 / 网络热词**：
+    >
+ 
+
+[4] 来源: 2026年2月3日-rag_0初步认识.md | 分类: AI & ML / Agent | 标题: 四 索引优化 > 1 混合索引 > 1.1 **稀疏向量 和 **密集向量 | 相关度: 0.842
+然我能编码新词，但 “能不能理解” 取决于**上下文学习能力**和**训练数据**：
+    >
+    > 1. **新词 / 网络热词**：
+    >
+    >    - 如果这个词（如 “YYDS”、“挖呀挖”）在我的训练语料中大量出现，我就像认识 “你好” 一样认识它。
+    >    - 如果是**2025 年之后**才流行的新词（我的训练数据截止时间之前未普及），我虽然能 “看见” 这个词（不会丢），但可能无法准确理解其网络含义，只能从字面或语境推断。
+    >
+    >
+    >
+    > 2. **专有名词（人名、地名、品牌）**：
+    >
+    >    - 对于知名实体（如 “马斯克”、“故宫”），训练数据充足，理解准确。
+    >    - 对于小众实体（如你的名字、一个冷门公司名），我不认识它，但我知道它是一个 “名词 / 实体”，并能根据上下文进行合理的互动（比如复述、询问、围绕它进行创作），而不是直接说 “我不懂”。
+    >
+    > ### 3. 我的 “OOV” 处理流程
+    >
+    > 当你输入一个我从未见过的词（比如一个新的网络梗或生僻字）时，我的处理步骤是：
+    >
+    > 1. **分词**：将新词切分为子词序列（如 "AI 爆改" -> ["AI", "爆", "改"]）。
+    >
+    > 2. **编码**：将子词转为向量，输入模型。
+    >
+    > 3. 推理：利用强大的
+    >
+    >    上下文语义理解能力
+    >
+    >    ，结合周围的文字，推断这个新词的含义、词性和作用。
+    >
+    >    - *例子*：即使我没见过 “挖呀挖”，但在 “在小小的花园里挖呀挖呀挖” 这句话中，我能推断出它是一个表示动作的、有节奏感的语气词。
+  
+
+[5] 来源: 2025年6月2日-rag_1框架.md | 分类: AI & ML / Agent | 标题: 三 READER > 2 Reader_use | 相关度: 0.841
+> 1. 文件加载器
+>    - **PDFReader** (ravi03071991): 解析 PDF 文件，提取文本和元数据，支持简单文本和复杂表格。
+>    - **DocxReader** (thejessezhang, Verified): 解析 Microsoft Word (.docx) 文件，提取格式化文本。
+>    - **CSVReader** (llama-index): 加载 CSV 文件，适合结构化数据处理。
+>    - **PyMuPDFReader** (iamarunbrahma): 使用 PyMuPDF 高效解析 PDF，适合大规模文档处理。
+>    - **SmartPDFLoader** (ansukla): 智能解析 PDF，提取复杂结构如表格和图像。
+> 2. 网页加载器
+>    - **SimpleWebPageReader** (thejessezhang, Verified): 加载网页内容，适合简单 HTML 页面。
+>    - **BeautifulSoupWebReader** (thejessezhang, Verified): 使用 BeautifulSoup 解析网页，提取结构化内容。
+>    - **FireCrawlWebReader** (llama-index): 通过 FireCrawl 工具高效抓取动态网页。
+>    - **TrafilaturaWebReader** (na): 使用 Trafilatura 提取网页核心内容，去除无关元素。
+> 3. 社交媒体与通信加载器
+>    - **TwitterTweetReader** (ravi03071991): 加载 Twitter/X 推文及元数据。
+>    - **SlackReader** (jerryjliu, Ver
+[INFO][2026-11-20 22:11:42][base.py:548] - Executing step 2/4
+[INFO][2026-11-20 22:11:45][llm.py:257] - Token usage: Input=4874, Completion=447, Cumulative Input=5362, Cumulative Completion=691, Total=5321, Cumulative Total=6053
+[INFO][2026-11-20 22:11:45][toolcall.py:101] - ✨ blog_rag's thoughts: 我是这个**个人技术博客知识库的问答助手**，不是检索结果中博客的作者本人。
+
+我的工作方式是：
+
+1. **先检索、后回答**：每次回答你的问题前，我会在你的博客知识库中做语义检索（可按 CV、DL、Agent、Deploy、MRI、Python、ML 等分类过滤）。
+2. **只依据检索到的内容作答**：不会凭空编造，也不会把我自己的通用知识当作博客内容来回答。
+3. **检索不到就说明**：如果知识库里没有相关内容，我会明确告诉你“知识库中没有相关内容”，而不是猜测。
+4. **标注来源**：回答末尾会列出引用的博客文件名，方便你回查原文。
+
+也就是说，我是你知识库的“检索入口 + 解说员”：你问技术或经历相关的问题，我负责从你写过的文章里找到对应片段并整理成清晰的回答。
+
+顺带说明：刚才为了了解知识库内容，我检索了“关于我 / 博客介绍”，命中的主要是这几类文件（仅供参考，并非用来回答你的问题）：
+- 《2026年8月1日-第一份工作总结.md》（求职/成长总结类）
+- 《2026年3月1日-工程设计.md》《2026年3月16日-rag_2工程实践.md》（工程与 RAG 实践）
+- 《2026年2月3日-rag_0初步认识.md》《2025年6月2日-rag_1框架.md》（RAG 基础与框架）
+
+如果你想了解“我是谁”，可以直接问我类似问题：比如“我平时用哪些 Agent 框架”“我做过的视觉项目有哪些”“RAG 分块策略怎么选”，我会从原文中给你整理出来。
+
+**参考来源文件：**
+- 2026年8月1日-第一份工作总结.md
+- 2026年3月1日-工程设计.md
+- 2026年3月16日-rag_2工程实践.md
+- 2026年2月3日-rag_0初步认识.md
+- 2025年6月2日-rag_1框架.md
+[INFO][2026-11-20 22:11:45][toolcall.py:102] - 🛠️ blog_rag selected 0 tools to use
+[INFO][2026-11-20 22:11:45][toolcall.py:187] - 🏁 Agent completed the task (no tool calls, final response in content).
+[INFO][2026-11-20 22:11:45][short.py:225] - Short memory full snapshot saved run_id=597212e12f81 messages=6
+[INFO][2026-11-20 22:11:45][toolcall.py:389] - 🧹 Cleaning up resources for agent 'blog_rag'...
+[INFO][2026-11-20 22:11:45][toolcall.py:401] - ✨ Cleanup complete for agent 'blog_rag'.

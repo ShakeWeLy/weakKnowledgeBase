@@ -1,0 +1,108 @@
+# Global LLM configuration
+[llm]
+model = "kimi-k2.5"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+api_key = "sk-559e15dcd3024eac811548154d089cb9"
+max_tokens = 8192
+temperature = 0.0
+supports_images = true
+use_max_completion_tokens = false
+
+
+[llm.fast]
+model = "deepseek-v4-flash"
+base_url = "https://api.deepseek.com/v1"
+api_key = "sk-559e15dcd3024eac811548154d089cb9"
+max_tokens = 8192
+temperature = 0.0
+supports_images = true
+use_max_completion_tokens = false
+
+[llm.deepseek_default]
+model = "deepseek-v4-flash"
+base_url = "https://api.deepseek.com/v1"
+api_key = "sk-559e15dcd3024eac811548154d089cb9"
+max_tokens = 8192
+temperature = 0.0
+supports_images = true
+use_max_completion_tokens = false
+
+[llm.deepseek_pro]
+model = "deepseek-v4-pro"
+base_url = "https://api.deepseek.com/v1"
+api_key = "sk-559e15dcd3024eac811548154d089cb9"
+max_tokens = 8192
+temperature = 0.0
+supports_images = true
+use_max_completion_tokens = false
+
+# kimi
+[llm.kimi_default]
+model = "kimi-k2.5"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+api_key = "sk-"
+max_tokens = 8192
+temperature = 0.0
+supports_images = true
+use_max_completion_tokens = false
+
+
+# [llm] #OLLAMA:
+# api_type = 'ollama'
+# model = "llama3.2"
+# base_url = "http://localhost:11434/v1"
+# api_key = "ollama"
+# max_tokens = 4096
+# temperature = 0.0
+
+# Optional configuration for specific LLM models
+[llm.vision]
+model = "mimo-v2.5"       # The vision model to use
+base_url = "sk-62d1a7a5d5224973b4d0130fd3390ece" # API endpoint URL for vision model
+api_key = "sk-"  # Your API key for vision model
+max_tokens = 8192                          # Maximum number of tokens in the response
+
+[scheduler]
+# SQLite path for TaskStore. Relative paths are resolved from project root (config.toml directory).
+db_path = "weakagent.sqlite3"
+
+[conversation]
+# SQLite path for persisted agent conversation tables.
+db_path = "weakagent.sqlite3"
+
+[skills]
+# builtin: project root skills/ ; custom: workspace/skills/ (skills_config.json)
+builtin_dir = "skills"
+custom_dir = "workspace/skills"
+# exclude = ["knowledge-wiki"]
+
+# Web search (web_search tool). Optional; defaults are sensible for DuckDuckGo-first.
+[search]
+# Search engine for agent to use. Default is "Google", can be set to "Baidu" or "DuckDuckGo" or "Bing".
+engine = "bing"
+# Fallback engine order. Default is ["DuckDuckGo", "Baidu", "Bing"] - will try in this order after primary engine fails.
+# fallback_engines = ["bing", "google", "baidu"]
+fallback_engines = []
+# Seconds to wait before retrying all engines again when they all fail due to rate limits. Default is 60.
+retry_delay = 15
+# Maximum number of times to retry all engines when all fail. Default is 3.
+max_retries = 2
+# Language code for search results. Options: "en" (English), "zh" (Chinese), etc.
+lang = "zh"
+# Country code for search results. Options: "us" (United States), "cn" (China), etc.
+country = "cn"
+
+
+# External MCP (e.g. Record App Streamable HTTP on :3001)
+[mcp]
+enabled = true
+
+[[mcp.services]]
+id = "record-app"
+available = true
+description = "Record App MCP：用于查询和管理待办事项、打卡记录"
+transport = "streamable_http"
+url = "http://localhost:3001/mcp"
+sync_key = "b6b1a2fef37f7e89ffb60dfb"
+
+# Add more [[mcp.services]] entries for additional MCP servers.
